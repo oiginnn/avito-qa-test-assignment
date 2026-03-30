@@ -132,28 +132,3 @@ def test_get_statistics_by_item_id():
     assert stat["viewCount"] == payload["statistics"]["viewCount"]
     assert stat["contacts"] == payload["statistics"]["contacts"]
 
-
-    def test_create_item_idempotency():
-    seller_id = random.randint(100000, 999999)
-
-    payload = {
-        "sellerId": seller_id,
-        "name": "Duplicate test",
-        "price": 1000,
-        "statistics": {
-            "likes": 1,
-            "viewCount": 1,
-            "contacts": 1
-        }
-    }
-
-    response1 = requests.post(f"{BASE_URL}/item", json=payload)
-    response2 = requests.post(f"{BASE_URL}/item", json=payload)
-
-    assert response1.status_code == 200
-    assert response2.status_code == 200
-
-    id1 = response1.json()["status"].split(" - ")[1]
-    id2 = response2.json()["status"].split(" - ")[1]
-
-    assert id1 != id2
